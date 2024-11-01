@@ -1,12 +1,13 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: nginx
+  name: nginx-np
 spec:
+  type: NodePort
   selector:
     project: expense
-    environment: dev
     module: backend
+    environment: dev
   ports:
   - name: nginx-svc-port
     protocol: TCP
