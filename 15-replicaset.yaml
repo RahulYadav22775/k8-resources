@@ -22,3 +22,19 @@ spec:
       containers:
       - name: nginx
         image: nginx
+
+---
+kind: Service
+apiVersion: v1
+metadata: 
+  name: nginx
+spec:
+  selector:
+    app: nginx
+    tier: fronted
+ports:
+- name: nginx-svc-port
+  protocol: TCP
+  port: 80 # service port
+  targetPort: 80 # container port
+  
