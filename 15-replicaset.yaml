@@ -32,9 +32,9 @@ spec:
   selector:
     app: nginx
     tier: fronted
-ports:
-- name: nginx-svc-port
-  protocol: TCP
-  port: 80 # service port
-  targetPort: 80 # container port
+  ports:
+  - name: nginx-svc-port
+    protocol: TCP
+    port: 80 # service port
+    targetPort: 80 # container port
   
