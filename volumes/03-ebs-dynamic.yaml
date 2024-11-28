@@ -1,39 +1,23 @@
 apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: ebs-static
-spec:
-  accessModes:
-  - ReadWriteOnce
-  capacity:
-    storage: 7Gi
-  csi:
-    driver: ebs.csi.aws.com
-    fsType: ext4
-    volumeHandle: vol-067e2131614ba9199  #ebs volume id
-
----
-apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: ebs-static
+  name: ebs-dynamic
 spec:
-  storageClassName: "" # Empty string must be explicitly set otherwise default StorageClass will be set
-  volumeName: ebs-static  #persistent volume name
+  storageClassName: "expense-ebs" 
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
+      storage: 3Gi
 
 ---
 
 apiVersion: v1
 kind: Pod
 metadata:
-  name: ebs-static
+  name: ebs-dynamic
   labels: 
-    purpose: ebs-static
+    purpose: ebs-dynamic
 spec:
   nodeSelector: 
     topology.kubernetes.io/zone: us-east-1d
@@ -41,12 +25,12 @@ spec:
   - name: nginx
     image: nginx
     volumeMounts:  # docekr run -v hostpath:container path
-    - name: ebs-static
+    - name: ebs-dynamic
       mountPath: /usr/share/nginx/html
   volumes:
-  - name: ebs-static #persistent volume name
+  - name: ebs-dynamic 
     persistentVolumeClaim:
-      claimName: ebs-static # persistent volume claim name
+      claimName: ebs-dynamic # persistent volume claim name
 
 ---
 
@@ -57,7 +41,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-     purpose: ebs-static  
+     purpose: ebs-dynamic 
   ports:
   - name: nginx-svc-port
     protocol: TCP
