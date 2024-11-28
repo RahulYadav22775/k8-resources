@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: efs-dynamic
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: "efs-expense"
+  resources:
+    requests:
+      storage: 3Gi
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: efs-dynamic
+  labels: 
+    purpose: efs-dynamic
+spec:
+  # nodeSelector: 
+  #   topology.kubernetes.io/zone: us-east-1a
+  containers:
+  - name: nginx
+    image: nginx
+    volumeMounts:  # docekr run -v hostpath:container path
+    - name: 
+      mountPath: /usr/share/nginx/html
+  volumes: efs-dynamic
+  - name: efs-dynamic #persistent volume name
+    persistentVolumeClaim:
+      claimName: efs-dynamic # persistent volume claim name
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx
+spec:
+  type: LoadBalancer
+  selector:
+     purpose: efs-dynamic  
+  ports:
+  - name: nginx-svc-port
+    protocol: TCP
+    port: 80 # service port
+    targetPort: 80 # container port
+    nodePort: 30007
