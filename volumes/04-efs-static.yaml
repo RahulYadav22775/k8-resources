@@ -26,3 +26,42 @@ spec:
   resources:
     requests:
       storage: 5Gi
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: efs-static
+  labels: 
+    purpose: efs-static
+spec:
+  # nodeSelector: 
+  #   topology.kubernetes.io/zone: us-east-1a
+  containers:
+  - name: nginx
+    image: nginx
+    volumeMounts:  # docekr run -v hostpath:container path
+    - name: expense-efs
+      mountPath: /usr/share/nginx/html
+  volumes:
+  - name: expense-efs #persistent volume name
+    persistentVolumeClaim:
+      claimName: expense-efs # persistent volume claim name
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx
+spec:
+  type: LoadBalancer
+  selector:
+     purpose: efs-static  
+  ports:
+  - name: nginx-svc-port
+    protocol: TCP
+    port: 80 # service port
+    targetPort: 80 # container port
+    nodePort: 30007
