@@ -10,7 +10,7 @@ spec:
   csi:
     driver: ebs.csi.aws.com
     fsType: ext4
-    volumeHandle: vol-067e2131614ba9199  #ebs volume id
+    volumeHandle: vol-0fbb90dd8aa722908  #ebs volume id
 
 ---
 apiVersion: v1
@@ -36,7 +36,7 @@ metadata:
     purpose: ebs-static
 spec:
   nodeSelector: 
-    topology.kubernetes.io/zone: us-east-1d
+    topology.kubernetes.io/zone: us-east-1a
   containers:
   - name: nginx
     image: nginx
